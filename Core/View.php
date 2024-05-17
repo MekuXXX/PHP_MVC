@@ -12,7 +12,6 @@ class View
   {
     return str_contains($view, '.php') ? $view : "$view.php";
   }
-
   
   protected function readTemplate(string $view, array $params = []): string
   {
@@ -28,13 +27,29 @@ class View
 
   protected function checkDefaultLayout(string $path): string
   {
-    if (is_dir(Application::$ROOT_VIEW_DIR . $path) && file_exists(Application::$ROOT_VIEW_DIR . $path . '/' . $this->addPrefix($this->DEFAULT_LAYOUT)))
-    {
-      return $path . '/' . $this->DEFAULT_LAYOUT;
-    }
-
     $pathArray = explode("/", $path);
     $pathLen = count($pathArray);
+    $nearLayout = implode("/", array_slice($pathArray, 0, $pathLen - 1)) . '/' . $this->addPrefix($this->DEFAULT_LAYOUT);
+   
+    // Check is the file is alone or it is a directory
+    if (file_exists(Application::$ROOT_VIEW_DIR . $this->addPrefix($path)))
+    {
+      // Check if there is a default layout next to the file
+      if (file_exists(Application::$ROOT_VIEW_DIR . $nearLayout)) 
+      {
+        return $nearLayout;
+      }
+    }
+    else 
+    {
+      // Check if the directory has a default layout file
+      if (is_dir(Application::$ROOT_VIEW_DIR . $path) && file_exists(Application::$ROOT_VIEW_DIR . $path . '/' . $this->addPrefix($this->DEFAULT_LAYOUT)))
+      {
+        return $path . '/' . $this->DEFAULT_LAYOUT;
+      }
+    }
+
+    // To get the layout if it exists next to view file in same directory
     
     for ($i = $pathLen - 2; $i >= 0; --$i)
     {
@@ -45,27 +60,30 @@ class View
         return $filePath;
       }
     }
-
+    
     return $this->DEFAULT_LAYOUT;
   }
-
+  
   public function renderView(string $view,?array $params = [], ?string $layout = null): string
   {
     
-    if ($layout === null) 
+    // To get the layout from the view path if the layout is not specified
+    if (is_null($layout)) 
     {
       $layout = $this->checkDefaultLayout($view);
     }
-    else if (!file_exists(Application::$ROOT_VIEW_DIR . $this->addPrefix($layout)) && is_dir(Application::$ROOT_VIEW_DIR . $layout))
+    // To get layout if the layout is specified as directory and the file not exist
+    else if (is_dir(Application::$ROOT_VIEW_DIR . $layout) && !file_exists(Application::$ROOT_VIEW_DIR . $this->addPrefix($layout)))
+    {
+      $layout = $view . '/' . $this->DEFAULT_LAYOUT;
+    }
+    
+    // To get the view if client use directory path if the file not exist
+    if (is_dir(Application::$ROOT_VIEW_DIR . $view) && !file_exists(Application::$ROOT_VIEW_DIR . $this->addPrefix($view)) )
     {
       $view = $view . '/' . $this->DEFAULT_PAGE;
     }
     
-    if (!file_exists(Application::$ROOT_VIEW_DIR . $this->addPrefix($view)) && is_dir(Application::$ROOT_VIEW_DIR . $view))
-    {
-      $view = $view . '/' . $this->DEFAULT_PAGE;
-    }
-
     $layoutTemplate = $this->readTemplate($layout); 
     $pageTemplate = $this->readTemplate($view, $params);
     return preg_replace('/\{\{\s*content\s*\}\}/', $pageTemplate, $layoutTemplate);
