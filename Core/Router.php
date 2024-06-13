@@ -5,7 +5,7 @@ namespace App\Core;
 
 class Router
 {
-  public static string $notFound = 'errors/404NotFound';
+  public static string $NOT_FOUND = 'errors/404NotFound';
   protected array $routes = [];
   protected Request $request;
   protected Controller $controller;
@@ -20,9 +20,9 @@ class Router
   {
     $method = $this->request->getMethod();
     $path = $this->request->getPath();
-    $callback = $this->routes[$method][$path] ?? $this->notFound;
+    $callback = $this->routes[$method][$path] ?? self::$NOT_FOUND;
 
-    if (self::$notFound === $callback)
+    if (self::$NOT_FOUND === $callback)
     {
       Application::$app->response->setStatusCode(404);
     }

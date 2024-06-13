@@ -19,6 +19,7 @@ abstract class Model
 
   abstract protected function rules(): array;
 
+
   public function validate(): bool
   {
     foreach ($this->rules() as $attribute => $rules)
@@ -71,5 +72,15 @@ abstract class Model
     }
 
     $this->errors[$attribute][] = $message;
+  }
+
+  public function hasError(string $attr): bool
+  {
+    return isset($this->errors[$attr]);
+  }
+
+  public function getFirstError(string $attr): string
+  {
+    return $this->errors[$attr][0];
   }
 }

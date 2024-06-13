@@ -5,8 +5,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Controllers\AuthController;
 use App\Core\Application;
 use App\Controllers\SiteController;
+use App\Core\Config;
 
-$app = new Application();
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$config = 
+$dotenv->load();
+
+
+$app = new Application(config: new Config($_ENV));
 
 $app->router->get("/",[SiteController::class, 'home']);
 

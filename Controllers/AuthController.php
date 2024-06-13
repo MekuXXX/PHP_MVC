@@ -23,7 +23,6 @@ class AuthController extends Controller
       {
         return "Register successfully";
       }
-      var_dump($registerModel->errors);
 
     }
     return $this->render('auth/register',params: [
