@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 namespace App\Models;
-use App\Core\Model;
+use App\Core\DBModel;
 use App\Core\Rule;
+use App\Core\USER_STATUS;
 
-class RegisterModel extends Model
+class User extends DBModel 
 {
   
   public string $first_name;
@@ -12,10 +13,35 @@ class RegisterModel extends Model
   public string $email;
   public string $password;
   public string $repeat_password;
+
+  public int $status;
   
-  public function register()
+  public function __construct()
   {
-    echo "Nothing";
+    $this->status = USER_STATUS::INACTIVE->message();
+  }
+  
+  
+  public function save(): bool
+  {
+    $this->password = password_hash($this->password, PASSWORD_DEFAULT);
+    return parent::save();
+  }
+  
+  public function tableName(): string
+  {
+    return "users";
+  }
+  
+  public function attributes(): array
+  {
+    return [
+      'first_name',
+      'last_name',
+      'email',
+      'password',
+      'status'
+    ];
   }
 
   protected function rules(): array
