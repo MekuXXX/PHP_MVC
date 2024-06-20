@@ -3,7 +3,6 @@
 namespace App\Core;
 
 use PDOException;
-use PDOStatement;
 
 abstract class DBModel extends Model
 {
@@ -16,7 +15,7 @@ abstract class DBModel extends Model
             $tableName = $this->tableName(); 
             $attributes = $this->attributes();
             $params = array_map(fn($attr) => ":$attr", $attributes);
-            $statement = self::prepare(
+            $statement = Database::prepare(
                  "INSERT INTO $tableName 
                      (" . implode(", ", $attributes) . ")
                  VALUES
@@ -36,8 +35,4 @@ abstract class DBModel extends Model
 
     }
 
-    public static function prepare(string $sql): PDOStatement
-    {
-        return Application::$app->db->pdo->prepare($sql);
-    }
 }

@@ -43,14 +43,23 @@ class User extends DBModel
       'status'
     ];
   }
+  
+  public function labels(): array
+  {
+    return [
+      'first_name' => 'First name',
+      'last_name' => 'Last name',
+      'repeat_password' => 'Confirm password',
+    ];
+  }
 
   protected function rules(): array
   {
     return [
       'first_name' => [RULE::REQUIRED, [RULE::MAX_LENGTH, 12]],
       'last_name' => [RULE::REQUIRED, [RULE::MAX_LENGTH, 12]],
-      'email' => [RULE::EMAIL],
-      'password' => [RULE::REQUIRED, [RULE::MIN_LENGTH, 8]],
+      'email' => [RULE::EMAIL, RULE::REQUIRED, [RULE::UNIQUE, 'class' => self::class]],
+      'password' => [RULE::REQUIRED, [RULE::MIN_LENGTH, 8], [RULE::MATCH, 'password']],
       'repeat_password' => [RULE::REQUIRED, [RULE::MATCH, 'password']],
     ];
   } 

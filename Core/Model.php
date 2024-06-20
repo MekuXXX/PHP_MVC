@@ -35,34 +35,55 @@ abstract class Model
 
         if ($rulename === RULE::REQUIRED && !$value)
         {
-          $this->addError($attribute, RULE::REQUIRED);
+          $this->addErrorForRule($attribute, RULE::REQUIRED);
+        }
+        else if ($rulename == RULE::EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL))
+        {
+          $this->addErrorForRule($attribute, RULE::EMAIL);
+        }
+        else if ($rulename == RULE::MIN_LENGTH && strlen($value) < $rule[1])
+        {
+          $this->addErrorForRule($attribute, RULE::MIN_LENGTH, $rule[1]);
+        }
+        elseif ($rulename == RULE::MAX_LENGTH && strlen($value) > $rule[1])
+        {
+          $this->addErrorForRule($attribute, RULE::MAX_LENGTH, $rule[1]);
+        }
+        else if ($rulename == RULE::MATCH && $this->{$rule[1]} !== $value)
+        {
+          $this->addErrorForRule($attribute, RULE::MATCH, $this->getLabel($rule[1]));
+        }
+        else if ($rulename === RULE::UNIQUE) 
+        {
+          $className = $rule['class'];
+          $uniqueAttr = $rule['attribute'] ?? $attribute;
+          $tableName = $className::tableName();
+          $statement = Database::prepare("Select * FROM $tableName WHERE $uniqueAttr = :attr");
+          $statement->bindValue(":attr", $value);
+          $statement->execute();
+          
+          $recod = $statement->fetchObject();
+          if ($recod) {
+            $this->addErrorForRule($attribute, RULE::UNIQUE, $attribute);
+          }
         }
         
-        if ($rulename == RULE::EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL))
-        {
-          $this->addError($attribute, RULE::EMAIL);
-        }
-
-        if ($rulename == RULE::MIN_LENGTH && strlen($value) < $rule[1])
-        {
-          $this->addError($attribute, RULE::MIN_LENGTH, $rule[1]);
-        }
-
-        if ($rulename == RULE::MAX_LENGTH && strlen($value) > $rule[1])
-        {
-          $this->addError($attribute, RULE::MAX_LENGTH, $rule[1]);
-        }
-
-        if ($rulename == RULE::MATCH && $this->{$rule[1]} !== $value)
-        {
-          $this->addError($attribute, RULE::MATCH, $rule[1]);
-        }
       }
     }
     return empty($this->errors);
   }
 
-  public function addError(string $attribute, RULE $rule, string | int $placeholder = null)
+  public function labels(): array
+  {
+    return [];
+  }
+  
+  public function getLabel(string $attribute): string
+  {
+    return $this->labels()[$attribute] ?? $attribute;
+  }
+
+  private function addErrorForRule(string $attribute, RULE $rule, string | int $placeholder = null)
   {
     $message = $rule->message() ?? "";
 
@@ -71,6 +92,11 @@ abstract class Model
       $message = preg_replace('/\{\{(.*?)\}\}/',"$placeholder", $message);
     }
 
+    $this->errors[$attribute][] = $message;
+  }
+  
+  function addError(string $attribute, string $message)
+  {
     $this->errors[$attribute][] = $message;
   }
 

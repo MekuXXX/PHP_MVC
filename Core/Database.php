@@ -72,6 +72,11 @@ class Database
     
     return $appliedMigrations->fetchAll(\PDO::FETCH_COLUMN);
   }
+  
+  public static function prepare(string $sql): \PDOStatement
+  {
+    return Application::$app->db->pdo->prepare($sql);
+  }
 
   protected function saveMigrations(array $migrations): void 
   {

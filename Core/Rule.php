@@ -6,6 +6,7 @@ enum RULE
 {
   case REQUIRED;
   case EMAIL;
+  case UNIQUE;
   case MAX_LENGTH;
   case MIN_LENGTH;
   case MATCH;
@@ -19,6 +20,7 @@ enum RULE
         RULE::MIN_LENGTH => "This field must be at least {{min}} characters",
         RULE::MAX_LENGTH => "This field must be at most {{max}} characters",
         RULE::MATCH => "This field must be same as the {{match}}",
+        RULE::UNIQUE => "This {{placeholder}} is used before"
       };
     }
 }

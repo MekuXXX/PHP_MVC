@@ -29,7 +29,8 @@ class FormField
                 %s
             </div>
         ',
-        ucwords(str_replace("_", " ", $this->attribute)),
+        
+        ucwords($this->model->getLabel($this->attribute)),
         $this->type->type(),
         $this->attribute,
         htmlspecialchars($value, ENT_QUOTES, 'UTF-8'),
