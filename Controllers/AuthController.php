@@ -25,7 +25,9 @@ class AuthController extends Controller
         exit;
       }
     }
-    return $this->render(view: 'auth/login');
+    return $this->render(view: 'auth/login', params: [
+      'model' => $loginForm
+    ]);
   }
 
   public function register(Request $request)

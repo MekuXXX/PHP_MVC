@@ -49,8 +49,7 @@ class View
       }
     }
 
-    // To get the layout if it exists next to view file in same directory
-    
+   // To get the layout from top of the tree to the bottom 
     for ($i = $pathLen - 2; $i >= 0; --$i)
     {
       

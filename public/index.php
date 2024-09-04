@@ -20,7 +20,6 @@ $app->router->get('/contact', 'contact');
 $app->router->post('/contact', [SiteController::class, 'handleContact']);
 
 // Authentication routes
-
 $app->router->get('/register', [AuthController::class, 'register']);
 $app->router->post('/register', [AuthController::class, 'register']);
 

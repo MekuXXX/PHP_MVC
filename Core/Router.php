@@ -8,11 +8,13 @@ class Router
   public static string $NOT_FOUND = 'errors/404NotFound';
   protected array $routes = [];
   protected Request $request;
+  protected Response $response;
   protected Controller $controller;
 
   public function __construct() 
   {  
     $this->request = new Request();
+    $this->response = new Response();
     $this->controller = new Controller();
   }
 
@@ -37,7 +39,7 @@ class Router
       $callback[0] = new $callback[0]();
     }
 
-    return call_user_func($callback, $this->request);
+    return call_user_func($callback, $this->request, $this->response);
   }
 
   public function get(string $path, callable | string | array $callback) 
