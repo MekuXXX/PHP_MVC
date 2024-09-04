@@ -8,8 +8,8 @@ use App\Core\Form\FORM_TYPE;
 ?>
 
 <div class="flex gap-4">
-    <?php $form->field('first_name') ?>
-    <?php $form->field('last_name') ?>
+  <?php $form->field('first_name') ?>
+  <?php $form->field('last_name') ?>
 </div>
 
 <?php $form->field('email', FORM_TYPE::EMAIL) ?>

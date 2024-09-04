@@ -33,6 +33,14 @@ class Request
       {
         $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
       }
+      
+      if (!empty($_FILES)) {
+        foreach ($_FILES as $key => $data) 
+        {
+          $body[$key] = $data; 
+        }
+      }
+      
     }
 
     return $body;

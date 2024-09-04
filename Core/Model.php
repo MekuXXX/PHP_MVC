@@ -25,6 +25,7 @@ abstract class Model
     foreach ($this->rules() as $attribute => $rules)
     {
       $value = $this->{$attribute};
+      
       foreach ($rules as $rule)
       {
         $rulename = $rule;
@@ -67,9 +68,39 @@ abstract class Model
             $this->addErrorForRule($attribute, RULE::UNIQUE, $attribute);
           }
         }
+        else if ($rulename === RULE::SIZE) {
+          if ($value['size'] > $rule['size']){
+            $this->addErrorForRule($attribute, RULE::SIZE, "2 MB");
+          }
+        }
+        else if ($rulename === RULE::EXTENSION) {
+          $fileExt = pathinfo($value['name'], PATHINFO_EXTENSION);
+
+          if (!in_array($fileExt, $rule['extensions'])) {
+            $this->addErrorForRule($attribute, RULE::EXTENSION, implode(", ", $rule['extensions']));
+          }
+        }
+        else if ($rulename === RULE::FILE) 
+        {
+          switch ($value['error']) 
+          {
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+              $this->addErrorForRule($attribute, RULE::SIZE, "2 M");
+            case UPLOAD_ERR_PARTIAL:
+              $this->addErrorForRule($attribute, RULE::FILE, "There is an error that the file is partially uploaded");
+            case UPLOAD_ERR_NO_FILE:
+              $this->addErrorForRule($attribute, RULE::FILE, "There is no file uploaded");
+            case UPLOAD_ERR_NO_TMP_DIR:
+              $this->addErrorForRule($attribute, RULE::FILE, "Error with the uploading directory");
+            case UPLOAD_ERR_CANT_WRITE:
+              $this->addErrorForRule($attribute, RULE::FILE, "There is no permision to write this file");
+          }
+        }
         
       }
     }
+    
     return empty($this->errors);
   }
 

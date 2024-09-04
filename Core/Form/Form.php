@@ -13,9 +13,9 @@ class Form
     $this->model = $model;
   }
 
-  public function begin(?string $action = "", ?string $method = 'get'): void 
+  public function begin(?string $action = "", ?string $method = 'get', ?bool $with_file = false): void 
   {
-    echo sprintf('<form action="%s" method="%s" class="w-full flex flex-col gap-3">', $action, $method);
+    echo sprintf('<form action="%s" method="%s" %s class="w-full flex flex-col gap-3">', $action, $method, $with_file ? 'enctype="multipart/form-data"' : '');
   }
 
   public function field(string $attribute, ?FORM_TYPE $type = FORM_TYPE::TEXT): FormField 

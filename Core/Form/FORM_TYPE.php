@@ -9,6 +9,8 @@ enum FORM_TYPE
   case PASSWORD;
   case NUMBER;
   case DATE;
+  case FILE;
+  case MULTIPLE_FILES;
 
   public function type(): string
   {
@@ -19,6 +21,8 @@ enum FORM_TYPE
       self::PASSWORD => 'password',
       self::NUMBER => 'number',
       self::DATE => 'date',
+      self::FILE => 'file',
+      self::MULTIPLE_FILES => 'file'
     };
   }
 }

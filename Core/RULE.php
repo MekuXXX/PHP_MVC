@@ -10,6 +10,9 @@ enum RULE
   case MAX_LENGTH;
   case MIN_LENGTH;
   case MATCH;
+  case FILE;
+  case SIZE;
+  case EXTENSION;
 
   public function message(): string
     {
@@ -20,7 +23,10 @@ enum RULE
         RULE::MIN_LENGTH => "This field must be at least {{min}} characters",
         RULE::MAX_LENGTH => "This field must be at most {{max}} characters",
         RULE::MATCH => "This field must be same as the {{match}}",
-        RULE::UNIQUE => "This {{placeholder}} is used before"
+        RULE::UNIQUE => "This {{placeholder}} is used before",
+        RULE::SIZE => "Maximum size to this input is {{size}}",
+        RULE::EXTENSION => "This file must be of type {{type}}",
+        RULE::FILE => "{{error}}"
       };
     }
 }

@@ -15,6 +15,9 @@ $dotenv->load();
 $app = new Application(config: new Config($_ENV));
 
 $app->router->get("/",[SiteController::class, 'home']);
+$app->router->get("/upload", [SiteController::class, 'exercise']);
+$app->router->post("/upload", [SiteController::class, 'exercise']);
+$app->router->get("/preview", "exercise/preview");
 
 $app->router->get('/contact', 'contact');
 $app->router->post('/contact', [SiteController::class, 'handleContact']);
